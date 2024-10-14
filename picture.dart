@@ -12,13 +12,13 @@ void main() {
 class MyApp extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          children: <Widget> [ 
-          SvgPicture.asset('assets/why.svg'),
-          SvgPicture.network('https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/acid.svg')
-          ]
+    return MaterialApp(
+      home: Scaffold(
+          body: Column(
+            children: <Widget>[
+              SvgPicture.asset('assets/why.svg'),
+              SvgPicture.network('https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/acid.svg')
+            ]
         ),
       ),
     );
