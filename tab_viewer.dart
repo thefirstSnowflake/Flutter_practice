@@ -8,20 +8,24 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key}); //берет key из класса по иерархии выше в конструктор
 
   // This widget is the root of your application.
-  @override //переопределяет виджет 
-  Widget build(BuildContext context) { //"строит" контекст - наполнение виджета
+  @override //переопределяет виджет
+  Widget build(BuildContext context) {
+    //"строит" контекст - наполнение виджета
     return MaterialApp(
-      theme: ThemeData( //конструктор темы
+      theme: ThemeData(
+        //конструктор темы
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple), //цвет
-        useMaterial3: true, 
+        useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'), //название в конструктор MyHomePage
+      home: const MyHomePage(
+          title: 'Flutter Demo Home Page'), //название в конструктор MyHomePage
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title}); //наследуем ключ и обязателен title
+  const MyHomePage(
+      {super.key, required this.title}); //наследуем ключ и обязателен title
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -35,19 +39,20 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState(); //возвращает объект класса
+  State<MyHomePage> createState() =>
+      _MyHomePageState(); //возвращает объект класса
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<String> tabNames = ['Мои фото', 'Галерея'];
-  Map <String, List<String>> imagesLinks = {
-    'Мои фото': 
-      ['https://loremflickr.com/320/240/cat',
+  Map<String, List<String>> imagesLinks = {
+    'Мои фото': [
+      'https://loremflickr.com/320/240/cat',
       'https://loremflickr.com/320/240/dog',
       'https://loremflickr.com/320/240/forest',
       'https://loremflickr.com/320/240/sakura',
-      'https://loremflickr.com/320/240/flower']
-    ,
+      'https://loremflickr.com/320/240/flower'
+    ],
     'Галерея': [
       'https://loremflickr.com/320/240/animal',
       'https://loremflickr.com/320/240/forest',
@@ -56,7 +61,6 @@ class _MyHomePageState extends State<MyHomePage> {
       'https://loremflickr.com/320/240/flower'
     ]
   };
-  
 
   @override
   Widget build(BuildContext context) {
@@ -69,12 +73,21 @@ class _MyHomePageState extends State<MyHomePage> {
     return DefaultTabController(
       length: tabNames.length,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('Images'),
-          bottom: TabBar(
-            tabs: tabNames.map((String item) => Tab(text: item)).toList()),
-        ),
-      ),
-    )
+          appBar: AppBar(
+            title: Text('Images'),
+            bottom: TabBar(
+                tabs: tabNames.map((String item) => Tab(text: item)).toList()),
+          ),
+          body: TabBarView(
+            children: tabNames.map((name) {
+              return ListView(
+                key: PageStorageKey(name),
+                children: <Widget>[
+                  for (var link in imagesLinks[name]!) Image.network(link),
+                ],
+              );
+            }).toList(),
+          )),
+    );
   }
 }
