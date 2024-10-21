@@ -33,14 +33,39 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('Hello!'),
+          title: Text('Hello, Flutter app!'),
           backgroundColor: Color.fromARGB(255, 159, 196, 239),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.person),
-              onPressed: () {},
+         ),
+      
+      bottomNavigationBar: BottomAppBar(
+        child: Container(
+          child: BottomNavigationBar(
+            elevation: 0,
+              items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: "Home",
+                
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.chat),
+                label: "Chat",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.album),
+                label: "Albums",
+              ),
+            ],
             ),
-          ]),
+        ),
+      ),
+
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        backgroundColor: Color.fromARGB(255, 239, 187, 255),
+        onPressed: () {},
+      ),
+
       drawer: Drawer(
           child: Column(children: [
         DrawerHeader(
