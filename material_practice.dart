@@ -4,6 +4,18 @@ void main() {
   runApp(const MyApp());
 }
 
+class TabItem{
+  String? title;
+  Icon? icon;
+  TabItem({this.title, this.icon});
+}
+
+final List<TabItem> _tabBar = [
+  TabItem(title: "Home", icon: Icon(Icons.home)),
+  TabItem(title: "Chat", icon: Icon(Icons.chat)),
+  TabItem(title: "Albums", icon: Icon(Icons.album))
+];
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -28,20 +40,20 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  PersistentBottomSheetController? _controller;
-
-  void openDrawer() {
-    scaffoldKey.currentState!.openEndDrawer();
+class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
+  TabController? _tabController;
+  int _currentTabIndex = 0;
+ 
+  @override
+  void initState(){
+    _tabController = TabController(length: _tabBar.length, vsync: this);
+    super.initState();
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
-
-      appBar: AppBar(
+        appBar: AppBar(
           title: Text('Hello, Flutter app!'),
           backgroundColor: Color.fromARGB(255, 159, 196, 239),
           actions: [
@@ -54,26 +66,33 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
          ),
       
-      bottomNavigationBar: BottomAppBar(
-        child: Container(
-          child: BottomNavigationBar(
-              items: [
-              
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: "Home", 
-              ),
-              
-              BottomNavigationBarItem(
-                icon: Icon(Icons.chat),
-                label: "Chat",
-              ),
-              
-            ],
+      body: TabBarView(
+        controller:  _tabController,
+        children: [
+          Container(
+            child: Image.network('https://loremflickr.com/320/240/animal'),
           ),
-        ),
+          Container(
+            child: Image.network('https://loremflickr.com/320/240/people'), 
+          ),
+          Container(
+            child: Image.network('https://loremflickr.com/320/240/music'), 
+          ),
+        ]
       ),
-
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: (index){
+          setState(() {
+            _tabController!.index = index;
+            _currentTabIndex = index;
+          });
+        },
+        currentIndex: _currentTabIndex,
+        items: [
+          for (final item in _tabBar)
+            BottomNavigationBarItem(label: item.title, icon: item.icon!)
+        ]
+      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         backgroundColor: Color.fromARGB(255, 239, 187, 255),
