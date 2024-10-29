@@ -43,7 +43,28 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
   TabController? _tabController;
   int _currentTabIndex = 0;
- 
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  PersistentBottomSheetController? _controller;
+
+  void toggleBottomSheet()
+  {
+    if (_controller == null)
+    {
+      _controller = scaffoldKey.currentState!.showBottomSheet(
+        (context) => Container(
+          height: 200,
+          color: Color.fromARGB(150, 130, 230, 190),
+          child: Center(
+            child: Text('Bottom sheet'),
+          )
+        )
+      );
+    }else{
+      _controller!.close();
+      _controller = null;
+    }
+  }
+
   @override
   void initState(){
     _tabController = TabController(length: _tabBar.length, vsync: this);
@@ -96,7 +117,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         backgroundColor: Color.fromARGB(255, 239, 187, 255),
-        onPressed: () {},
+        onPressed: toggleBottomSheet,
       ),
 
       endDrawer: Drawer(
