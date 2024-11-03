@@ -4,7 +4,7 @@ void main() {
   runApp(const MyApp());
 }
 
-class TabItem{
+class TabItem {
   String? title;
   Icon? icon;
   TabItem({this.title, this.icon});
@@ -40,103 +40,113 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
   TabController? _tabController;
   int _currentTabIndex = 0;
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   PersistentBottomSheetController? _controller;
 
-  void toggleBottomSheet()
-  {
-    if (_controller == null)
-    {
-      _controller = scaffoldKey.currentState!.showBottomSheet(
-        (context) => Container(
-          height: 200,
-          color: Color.fromARGB(150, 130, 230, 190),
-          child: Center(
-            child: Text('Bottom sheet'),
-          )
-        )
-      );
-    }else{
+  void toggleBottomSheet() {
+    if (_controller == null) {
+      _controller =
+          scaffoldKey.currentState!.showBottomSheet((context) => Container(
+                child: Row(children: [
+                  Icon(Icons.credit_card_outlined, size: 22),
+                  Text("Сумма"),
+                  Text("200 руб"),ф
+                ]),
+                color: Color.fromARGB(148, 226, 226, 226),
+                height: 150,
+              ));
+    } else {
       _controller!.close();
       _controller = null;
     }
   }
 
   @override
-  void initState(){
+  void initState() {
     _tabController = TabController(length: _tabBar.length, vsync: this);
     super.initState();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Hello, Flutter app!'),
-          backgroundColor: Color.fromARGB(255, 159, 196, 239),
-          actions: [
-            Builder(builder: (context) => IconButton(
-            onPressed: () {
-              Scaffold.of(context).openEndDrawer();
-            }, 
-            icon: Icon(Icons.account_circle_rounded)),
-            )
-          ],
-         ),
-      
-      body: TabBarView(
-        controller:  _tabController,
-        children: [
+      key: scaffoldKey,
+      appBar: AppBar(
+        title: Text('Hello, Flutter app!'),
+        backgroundColor: Color.fromARGB(255, 159, 196, 239),
+        actions: [
+          Builder(
+            builder: (context) => IconButton(
+                onPressed: () {
+                  Scaffold.of(context).openEndDrawer();
+                },
+                icon: Icon(Icons.account_circle_rounded)),
+          )
+        ],
+      ),
+      body: SafeArea(
+        child: TabBarView(controller: _tabController, children: [
           Container(
             child: Image.network('https://loremflickr.com/320/240/animal'),
           ),
           Container(
-            child: Image.network('https://loremflickr.com/320/240/people'), 
+            child: Image.network('https://loremflickr.com/320/240/people'),
           ),
           Container(
-            child: Image.network('https://loremflickr.com/320/240/music'), 
+            child: Image.network('https://loremflickr.com/320/240/music'),
           ),
-        ]
+        ]),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: (index){
-          setState(() {
-            _tabController!.index = index;
-            _currentTabIndex = index;
-          });
-        },
-        currentIndex: _currentTabIndex,
-        items: [
-          for (final item in _tabBar)
-            BottomNavigationBarItem(label: item.title, icon: item.icon!)
-        ]
+      floatingActionButton: SafeArea(
+        child: FloatingActionButton(
+          child: Icon(Icons.add),
+          backgroundColor: Color.fromARGB(255, 239, 187, 255),
+          onPressed: toggleBottomSheet,
+        ),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        backgroundColor: Color.fromARGB(255, 239, 187, 255),
-        onPressed: toggleBottomSheet,
+      bottomNavigationBar: SafeArea(
+        child: BottomAppBar(
+          child: Container(
+            child: BottomNavigationBar(
+              items: [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home, size: 22),
+                  label: "Home",
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.chat, size: 22),
+                  label: "Chat",
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.album, size: 22),
+                  label: "Albums",
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
-
-      endDrawer: Drawer(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-
-            children: [ 
+      endDrawer: SafeArea(
+        child: Drawer(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
               CircleAvatar(
-                backgroundImage: NetworkImage('https://loremflickr.com/320/240/cat'),
+                backgroundImage:
+                    NetworkImage('https://loremflickr.com/320/240/cat'),
                 radius: 50,
               ),
               Text('username'),
-            ]
-          )
+            ])),
       ),
-
-      drawer: Drawer(
-          child: Column(children: [
+      drawer: SafeArea(
+        child: Drawer(
+            child: Column(children: [
           DrawerHeader(
             child: CircleAvatar(
               backgroundImage: NetworkImage(
@@ -169,6 +179,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                 ]),
           )
         ])),
+      ),
     ); // This trailing comma makes auto-formatting nicer for build methods.
   }
 }
