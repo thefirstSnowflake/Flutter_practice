@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:layout_practice_6_5/fakeData.dart';
 
 void main() {
   runApp(const MyApp());
 }
+
+final fakeData = (int count) => List<Widget>.generate(
+      count,
+      (i) {
+        return Card(
+          color: Colors.green,
+        );
+      },
+    );
+final cards = fakeData(100);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -29,8 +38,6 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-final cards = fakeData(100);
-
 class _MyHomePageState extends State<MyHomePage> {
   final List<int> sequenceOfNumbers = [
     for (var i = 0; i <= 100; i++) i
@@ -46,15 +53,13 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
         body: SafeArea(
       child: Container(
-          height: 100,
-          child: ListView.builder(
-           
-              scrollDirection: Axis.vertical,
-              itemCount: cards.length,
-              itemBuilder: (context, index) => 
-              }
-              ),
-
+        height: 100,
+        child: ListView.builder(
+          scrollDirection: Axis.vertical,
+          itemCount: cards.length,
+          itemBuilder: (context, index) => cards[index],
+        ),
+      ),
       /* body: SafeArea(
             //чтобы не входить за границы приложения
             child: Align(
