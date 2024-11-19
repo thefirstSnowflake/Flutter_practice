@@ -20,19 +20,18 @@ class MyApp extends StatelessWidget {
           case MyHomePage.routeName:
             return MaterialPageRoute(builder: (BuildContext context) {
               return MyHomePage();
-            });
+            }, settings: settings);
           case ArtistsPage.routeName:
             return MaterialPageRoute(builder: (BuildContext context) {
               return ArtistsPage();
-            });
+            }, settings: settings);
           case AboutPage.routeName:
-            return MaterialPageRoute(builder: (BuildContext context) => AboutPage(
-              artistName: ,
-              artistDescription: ,
-            )
+            return MaterialPageRoute(builder: (BuildContext context) {
+              return AboutPage();
+            }, settings: settings);
 
               
-            );
+          
           default:
             break;
         }
@@ -90,6 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 class ArtistsPage extends StatefulWidget {
   static const routeName = '/artists';
+  
   const ArtistsPage({super.key});
 
 //  final String title;
@@ -114,8 +114,9 @@ class _ArtistsPageState extends State<ArtistsPage> {
                 itemBuilder: (context, index) {
                   final artist = snapshot.data![index];
                   return ListTile(title: Text(artist.name!), onTap: () {
-                    Navigator.of(context).pushNamed('/about');
-                    
+                    //print(artist != null);
+                    //print(artist != null);
+                    Navigator.of(context).pushNamed('/about', arguments: artist);
                   },);
                 },
               );
@@ -141,24 +142,35 @@ class _ArtistsPageState extends State<ArtistsPage> {
 }
 
 
-
-class AboutPage extends StatelessWidget {
+class AboutPage extends StatefulWidget {
   static const routeName = '/about';
+  const AboutPage({super.key});
 
-  final String? artistDescription;
-  final String? artistName;
+  @override
+  State<AboutPage> createState() => _AboutPageState();
+}
 
-  const AboutPage({
-    Key? key,
-    required this.artistName,
-    required this.artistDescription
-  }) : super(key: key);
+class _AboutPageState extends State<AboutPage> {
+  String? artistName;
+  String? artistAbout;
+
+  @override
+ void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    final args = ModalRoute.of(context)?.settings.arguments as Album;
+
+    artistName = args.name;
+    artistAbout = args.about;
+
+    setState(() {});
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(artistName!),
+        title: Text(artistName ?? 'Error'),
         backgroundColor: const Color.fromARGB(255, 96, 191, 255),
         actions: [
           Builder(
@@ -171,7 +183,7 @@ class AboutPage extends StatelessWidget {
         ],
       ),
      body: SafeArea( child: SingleChildScrollView(
-      child: Text(artistDescription!),
+      child: Text(artistAbout ?? 'Error'),
      )
       
      ),
