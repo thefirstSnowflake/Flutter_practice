@@ -31,20 +31,23 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  
   @override
   Widget build(BuildContext context) {
-   
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 170, 220, 255),
-        title: Text('Hello! Let''s read the files!'),
+        title: Text('Hello! Let' 's read the files!'),
       ),
-      body: SafeArea(child: Container(
-      width: 350, //ширина инпута = 350
-      margin: EdgeInsets.only(top: 20),
-      child: TextField(
-         decoration: InputDecoration(
+      body: SafeArea(
+        child: Container(
+          width: 350, //ширина инпута = 350
+          margin: EdgeInsets.only(top: 20),
+          child: Column(
+            children: [
+              Row(children: [
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
                       //создаем для него оформление
                       enabledBorder: OutlineInputBorder(
                           //оформление для границ поля в пассивном состоянии
@@ -60,16 +63,64 @@ class _MyHomePageState extends State<MyHomePage> {
                           borderSide: BorderSide(
                               //цвет границы
                               color: Color.fromARGB(255, 187, 0, 255))),
-                  
+
                       hintText: "Введите имя файла", //подсказка
                       hintStyle: TextStyle(
                           color: Color.fromARGB(
                               255, 183, 183, 183), //цвет подсказки и размер
                           fontSize: 15),
+                    ),
+                  ),
+                ),
+                Expanded(
+                    child: SizedBox(
+                        height: 60,
+                        width: 10,
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          style: ButtonStyle(
+                            shape:
+                                WidgetStateProperty.all<RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(0.0),
+                                            bottomRight: Radius.circular(10.0),
+                                            topLeft: Radius.circular(0.0),
+                                            topRight: Radius.circular(10.0)))),
+                            backgroundColor: WidgetStateProperty.all<Color>(
+                                Color.fromARGB(255, 0, 0, 0)),
+                            foregroundColor: WidgetStateProperty.all<Color>(
+                                Color.fromARGB(255, 255, 255, 255)),
+                          ),
+                          child: Text('Найти'),
+                        ))),
+              ]),
+            ],
+          ),
+        ),
       ),
-      ),
-      ),
-      ),
+
+      /*FutureBuilder<String>(
+      future: fetchFileFromAssets('assets/file1.txt'), 
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot){
+        print(snapshot.data);
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
+            return Center(child: CircularProgressIndicator(),
+          );
+          case ConnectionState.done:
+            if (snapshot.data == null) {
+              return Expanded( child: Center(child: Text('The file was not found.')) ); 
+            }
+            return SingleChildScrollView(child: Text(snapshot.data!));
+          default: return Center(child: CircularProgressIndicator());
+        }
+      }
+    )*/
+    );
+  }
+}
+
       
       /*FutureBuilder<String>(
       future: fetchFileFromAssets('assets/file1.txt'), 
