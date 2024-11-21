@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
+  
   final String title;
 
   @override
@@ -31,6 +31,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final fileNameController = TextEditingController();
+
+  @override
+  void dispose(){
+    fileNameController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,23 +55,21 @@ class _MyHomePageState extends State<MyHomePage> {
               Row(children: [
                 Expanded(
                   child: TextField(
+                    controller: fileNameController,
                     decoration: InputDecoration(
                       //создаем для него оформление
                       enabledBorder: OutlineInputBorder(
                           //оформление для границ поля в пассивном состоянии
-                          borderRadius: BorderRadius.circular(
-                              15), //радиус границы = 15 (скругленная)
+                          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10.0), topLeft: Radius.circular(10.0) ), //радиус границы = 15 (скругленная)
                           borderSide: BorderSide(
                               //цвет границы
-                              color: Color.fromARGB(255, 187, 0, 255))),
+                              color: Color.fromARGB(255, 0, 0, 0), width: 2)),
                       focusedBorder: OutlineInputBorder(
-                          //оформление для границ поля в состоянии выбора и ввода
-                          borderRadius: BorderRadius.circular(
-                              6), //радиус границы = 15 (скругленная)
+                          //оформление для границ поля в пассивном состоянии
+                          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10.0), topLeft: Radius.circular(10.0) ), //радиус границы = 15 (скругленная)
                           borderSide: BorderSide(
                               //цвет границы
-                              color: Color.fromARGB(255, 187, 0, 255))),
-
+                              color: Color.fromARGB(255, 0, 0, 0), width: 2)),
                       hintText: "Введите имя файла", //подсказка
                       hintStyle: TextStyle(
                           color: Color.fromARGB(
@@ -72,12 +78,29 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                 ),
-                Expanded(
-                    child: SizedBox(
+                SizedBox(
                         height: 60,
-                        width: 10,
+                        width: 100,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: (String fileNameController.text) {
+                            FutureBuilder<String>(
+                future: fetchFileFromAssets(fileNameController.text), 
+                builder: (BuildContext context, AsyncSnapshot<String> snapshot){
+                print(snapshot.data);
+                switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                  return Center(child: CircularProgressIndicator(),
+                );
+                case ConnectionState.done:
+                  if (snapshot.data == null) {
+                    return Expanded( child: Center(child: Text('The file was not found.')) ); 
+                  }
+                return SingleChildScrollView(child: Text(snapshot.data!));
+                default: return Center(child: CircularProgressIndicator());
+               }
+              }
+              );
+                          },
                           style: ButtonStyle(
                             shape:
                                 WidgetStateProperty.all<RoundedRectangleBorder>(
@@ -93,30 +116,16 @@ class _MyHomePageState extends State<MyHomePage> {
                                 Color.fromARGB(255, 255, 255, 255)),
                           ),
                           child: Text('Найти'),
-                        ))),
+                        )),
+              
+                
               ]),
             ],
           ),
         ),
       ),
 
-      /*FutureBuilder<String>(
-      future: fetchFileFromAssets('assets/file1.txt'), 
-      builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-        print(snapshot.data);
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting:
-            return Center(child: CircularProgressIndicator(),
-          );
-          case ConnectionState.done:
-            if (snapshot.data == null) {
-              return Expanded( child: Center(child: Text('The file was not found.')) ); 
-            }
-            return SingleChildScrollView(child: Text(snapshot.data!));
-          default: return Center(child: CircularProgressIndicator());
-        }
-      }
-    )*/
+    
     );
   }
 }
@@ -139,10 +148,6 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       }
     )*/
-      
-    );
-  }
-}
 
 
 /*функция*/
