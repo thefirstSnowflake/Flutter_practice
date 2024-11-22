@@ -32,12 +32,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final fileNameController = TextEditingController();
-
+  bool showText = false;
   @override
   void dispose(){
     fileNameController.dispose();
     super.dispose();
   }
+
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -48,8 +50,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: SafeArea(
         child: Container(
+
           width: 350, //ширина инпута = 350
-          margin: EdgeInsets.only(top: 20),
+          margin: EdgeInsets.only(top: 20, left: 20),
           child: Column(
             children: [
               Row(children: [
@@ -82,24 +85,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         height: 60,
                         width: 100,
                         child: ElevatedButton(
-                          onPressed: (String fileNameController.text) {
-                            FutureBuilder<String>(
-                future: fetchFileFromAssets(fileNameController.text), 
-                builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-                print(snapshot.data);
-                switch (snapshot.connectionState) {
-                case ConnectionState.waiting:
-                  return Center(child: CircularProgressIndicator(),
-                );
-                case ConnectionState.done:
-                  if (snapshot.data == null) {
-                    return Expanded( child: Center(child: Text('The file was not found.')) ); 
-                  }
-                return SingleChildScrollView(child: Text(snapshot.data!));
-                default: return Center(child: CircularProgressIndicator());
-               }
-              }
-              );
+                          onPressed: () {
+                            setState(() { //переключить условие на true, чтобы разрешить отображение текста из FutureBuilder
+                              showText = true;
+                            });
                           },
                           style: ButtonStyle(
                             shape:
@@ -116,13 +105,41 @@ class _MyHomePageState extends State<MyHomePage> {
                                 Color.fromARGB(255, 255, 255, 255)),
                           ),
                           child: Text('Найти'),
-                        )),
-              
-                
+                        )
+                ),
               ]),
-            ],
           ),
-        ),
+              (showText == true) 
+              ? Column(
+                
+                children: [
+                Container(
+                  padding: EdgeInsets.only(top: 15, bottom: 15),
+                  alignment: Alignment.topLeft,
+                child: Text(fileNameController.text + ' file'), 
+                ),
+               
+                
+               FutureBuilder<String>(
+                future: fetchFileFromAssets(fileNameController.text), 
+                builder: (BuildContext context, AsyncSnapshot<String> snapshot){
+                print(snapshot.data);
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    return Center(child: CircularProgressIndicator(),
+                );
+                  case ConnectionState.done:
+                    if (snapshot.data == null) {
+                      return Container( padding: EdgeInsets.only(left: 10), alignment: Alignment.topLeft, child: Text('The file was not found.'));
+                  }
+                    return Container( padding: EdgeInsets.only(left: 10), alignment: Alignment.topLeft, child: Text(snapshot.data!));
+                default: return Center(child: CircularProgressIndicator());
+                }
+              }
+            )
+            ]) : const SizedBox(),
+          ]
+
       ),
 
     
@@ -130,7 +147,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-      
+
+     
       /*FutureBuilder<String>(
       future: fetchFileFromAssets('assets/file1.txt'), 
       builder: (BuildContext context, AsyncSnapshot<String> snapshot){
